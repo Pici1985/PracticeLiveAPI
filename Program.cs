@@ -34,8 +34,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// this is a 
+// CORS 
+
+var corsSettings = configuration.GetSection("CorsSettings");
+var allowedOrigin = corsSettings.GetValue<string>("AllowedOrigin");
+
 app.UseCors(policy => policy.AllowAnyOrigin());
+
+//app.UseCors(policy => policy.WithOrigins(allowedOrigin)
+//                                        .AllowAnyHeader()
+//                                        .AllowAnyMethod()
+//                                        .AllowCredentials()
+//                                        );
 
 app.UseHttpsRedirection();
 
