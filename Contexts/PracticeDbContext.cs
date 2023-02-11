@@ -79,7 +79,7 @@ namespace PracticeFullstackApp.Contexts
             {
                 Id= video.Id,
                 Title = video.Title,    
-                DateTime = video.Date,
+                DateTime = DateTime.Now,
                 imageUrls= video.Url    
             };
                         
@@ -87,24 +87,6 @@ namespace PracticeFullstackApp.Contexts
             await SaveChangesAsync();
 
             return updatedVideo;
-        }
-
-        public bool DoesIdExistChecker(int id) 
-        {
-            var allVideos = GetAllVideos();
-
-            var allExistingIds = new List<int>();
-
-            foreach (var currentVideo in allVideos)
-            {
-                allExistingIds.Add(currentVideo.Id);
-            }
-
-            if (allExistingIds.Contains(id)) 
-            { 
-                return true;
-            }
-            return false;
         }
     }
 }

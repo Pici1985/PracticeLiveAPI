@@ -2,6 +2,7 @@
 using PracticeFullstackApp.Contexts;
 using PracticeFullstackApp.Entities;
 using PracticeFullstackApp.Models;
+using PracticeFullstackApp.Utilities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,10 +13,13 @@ namespace PracticeFullstackApp.Controllers
     public class TestController : ControllerBase
     {
         internal readonly PracticeDbContext context;
+        internal readonly IUtility utility;
+        
 
-        public TestController(PracticeDbContext context)
+        public TestController(PracticeDbContext context, Utility utility)
         {
             this.context = context;
+            this.utility = utility;
         }
                 
         [Route("/videos")]
@@ -51,7 +55,7 @@ namespace PracticeFullstackApp.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteVideo(int id)
         {
-            if (context.DoesIdExistChecker(id)) 
+            if (utility.DoesIdExistChecker(id)) 
             { 
                 await context.DeleteVideo(id);                            
                 return Ok(new { Message = $"VideoID: {id} deleted!"});            
@@ -63,7 +67,7 @@ namespace PracticeFullstackApp.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateVideo([FromBody] Video video)
         {
-            if (context.DoesIdExistChecker(video.Id)) 
+            if (utility.DoesIdExistChecker(video.Id)) 
             { 
                 await context.UpdateVideo(video);                            
                 return Ok(new { Message = $"VideoID: {video.Id} updated!"});            

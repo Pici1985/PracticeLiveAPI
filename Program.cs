@@ -5,6 +5,7 @@ using PracticeFullstackApp.Contexts;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
 using FluentAssertions.Common;
+using PracticeFullstackApp.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +22,7 @@ var configuration = new ConfigurationBuilder()
                 .Build();
 
 builder.Services.AddDbContext<PracticeDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
-
+builder.Services.AddScoped<Utility>();
 
 var app = builder.Build();
 
