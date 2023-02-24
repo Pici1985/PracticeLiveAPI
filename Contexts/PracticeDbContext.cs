@@ -6,33 +6,34 @@ namespace PracticeFullstackApp.Contexts
 {
     public class PracticeDbContext : DbContext
     {
-        public PracticeDbContext(DbContextOptions<PracticeDbContext> options) : base(options) 
-        { 
-        
+        public PracticeDbContext(DbContextOptions<PracticeDbContext> options) : base(options)
+        {
+
         }
 
         public DbSet<TestTable> TestTable { get; set; }
+        public DbSet<UsersTable> Users { get; set; }
 
 
 
-        public List<Video> GetAllVideos() 
+        public List<Video> GetAllVideos()
         {
             var videos = (from v in TestTable
-                          select new Video() 
-                          { 
-                            Id= v.Id,
-                            Title= v.Title,    
-                            Date= v.DateTime,
-                            Url= v.imageUrls                            
+                          select new Video()
+                          {
+                              Id = v.Id,
+                              Title = v.Title,
+                              Date = v.DateTime,
+                              Url = v.imageUrls
                           }).ToList();
 
-            return videos;  
+            return videos;
         }
 
-        public Video GetVideo(int id) 
+        public Video GetVideo(int id)
         {
             var video = (from v in TestTable
-                         where v.Id == id   
+                         where v.Id == id
                          select new Video()
                          {
                              Id = v.Id,
@@ -44,7 +45,7 @@ namespace PracticeFullstackApp.Contexts
             return video;
         }
 
-        public async Task<Video> SaveVideo(Video video) 
+        public async Task<Video> SaveVideo(Video video)
         {
             var videoToSave = new TestTable()
             {
@@ -60,7 +61,7 @@ namespace PracticeFullstackApp.Contexts
             return video;
         }
 
-        public async Task<int> DeleteVideo(int id) 
+        public async Task<int> DeleteVideo(int id)
         {
             var videoToDelete = new TestTable()
             {
@@ -72,21 +73,59 @@ namespace PracticeFullstackApp.Contexts
 
             return id;
         }
+        
+        public async Task<List<int>> DeleteVideosInRange(List<int> ids)
+        {
+            var videoListToDelete = new List<TestTable>();
 
-        public async Task<TestTable> UpdateVideo(Video video) 
+            foreach (var video in ids) 
+            { 
+                var videoToDelete = new TestTable()
+                {
+                    Id = video,
+                };
+                videoListToDelete.Add(videoToDelete);
+            }
+
+            TestTable.RemoveRange(videoListToDelete);
+            await SaveChangesAsync();
+
+            return ids;
+        }
+
+
+
+        public async Task<TestTable> UpdateVideo(Video video)
         {
             var updatedVideo = new TestTable()
             {
-                Id= video.Id,
-                Title = video.Title,    
+                Id = video.Id,
+                Title = video.Title,
                 DateTime = DateTime.Now,
-                imageUrls= video.Url    
+                imageUrls = video.Url
             };
-                        
+
             TestTable.Update(updatedVideo);
             await SaveChangesAsync();
 
             return updatedVideo;
+        }
+
+        public async Task<List<UsersTable>> GetAllUsers()
+        {
+            var allUsers = (from user in Users
+                            select user).ToList();
+
+            return allUsers;
+        }
+
+        public async Task<UsersTable> GetUser(UserDto user)
+        {
+            var userToLogin = (from u in Users
+                               where u.UserName == user.Username && u.Password == user.Password 
+                               select u).FirstOrDefault();
+
+            return userToLogin;
         }
     }
 }

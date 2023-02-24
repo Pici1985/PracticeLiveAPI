@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PracticeFullstackApp.Contexts;
 using PracticeFullstackApp.Entities;
 using PracticeFullstackApp.Models;
@@ -10,6 +11,7 @@ namespace PracticeFullstackApp.Controllers
 {
     [Route("api")]
     [ApiController]
+    //[Authorize]
     public class TestController : ControllerBase
     {
         internal readonly PracticeDbContext context;
@@ -23,6 +25,7 @@ namespace PracticeFullstackApp.Controllers
         }
                 
         [Route("/videos")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllVideos()
         {
@@ -32,6 +35,7 @@ namespace PracticeFullstackApp.Controllers
         
         [Route("/videos/{id}")]
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetVideo(int id)
         {
             
@@ -40,6 +44,7 @@ namespace PracticeFullstackApp.Controllers
 
         [Route("/videos")]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> PostVideo([FromBody] Video video)
         {   
             if (video != null) 
@@ -53,6 +58,8 @@ namespace PracticeFullstackApp.Controllers
         
         [Route("/videos/{id}")]
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        //[Authorize]
         public async Task<IActionResult> DeleteVideo(int id)
         {
             if (utility.DoesIdExistChecker(id)) 
@@ -64,7 +71,36 @@ namespace PracticeFullstackApp.Controllers
         } 
         
         [Route("/videos")]
+        [HttpDelete]
+        //[Authorize(Roles = "Admin")]
+        //[Authorize]
+        public async Task<IActionResult> DeleteVideos([FromBody] ItemsToDelete ids)
+        {
+            List<int> existingIds = new List<int>(); 
+            
+            if (ids.Ids != null && ids.Ids.Count > 0) 
+            { 
+                foreach (var id in ids.Ids) 
+                {
+                    if (utility.DoesIdExistChecker(id))
+                    {
+                        existingIds.Add(id);
+                    }
+                }
+                if(existingIds.Count != 0 ) 
+                {
+                    await context.DeleteVideosInRange(existingIds);
+                    string idsDeleted = string.Join(",", existingIds);
+                    return Ok( $"Videos with id: {idsDeleted} removed");
+                }
+                return BadRequest(new { Message = $"Nothing to delete!" });
+            }
+            return BadRequest(new { Message = $"Nothing to delete!"});
+        } 
+        
+        [Route("/videos")]
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateVideo([FromBody] Video video)
         {
             if (utility.DoesIdExistChecker(video.Id)) 
