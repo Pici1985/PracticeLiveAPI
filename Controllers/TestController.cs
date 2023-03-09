@@ -25,7 +25,8 @@ namespace PracticeFullstackApp.Controllers
         }
                 
         [Route("/videos")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllVideos()
         {
@@ -35,16 +36,15 @@ namespace PracticeFullstackApp.Controllers
         
         [Route("/videos/{id}")]
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetVideo(int id)
         {
-            
             return Ok(context.GetVideo(id));
         }
 
         [Route("/videos")]
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> PostVideo([FromBody] Video video)
         {   
             if (video != null) 
@@ -53,12 +53,11 @@ namespace PracticeFullstackApp.Controllers
                 return Ok(new { Message = "Video saved!"});
             }
             return BadRequest("Error");
-
         }
         
         [Route("/videos/{id}")]
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         //[Authorize]
         public async Task<IActionResult> DeleteVideo(int id)
         {
@@ -67,7 +66,7 @@ namespace PracticeFullstackApp.Controllers
                 await context.DeleteVideo(id);                            
                 return Ok(new { Message = $"VideoID: {id} deleted!"});            
             }
-            return BadRequest(new { Message = $"{ id } does not exist"});
+            return BadRequest(new { Message = $"{id} does not exist"});
         } 
         
         [Route("/videos")]
@@ -100,7 +99,7 @@ namespace PracticeFullstackApp.Controllers
         
         [Route("/videos")]
         [HttpPut]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> UpdateVideo([FromBody] Video video)
         {
             if (utility.DoesIdExistChecker(video.Id)) 

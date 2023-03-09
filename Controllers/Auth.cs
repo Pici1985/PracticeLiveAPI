@@ -29,50 +29,49 @@ namespace PracticeFullstackApp.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(User request) 
+        public async Task<ActionResult<User>> Register(UserDto request) 
         { 
-            //string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-                        
-            var user = new UsersTable() 
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+            try 
             { 
-                UserName = request.Username,
-                Password = request.Password,
-                IsAdmin = request.isAdmin
-            };            
+                var user = new UsersTable() 
+                { 
+                    UserName = request.Username,
+                    Password = passwordHash,
+                    IsAdmin = false
+                };            
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
 
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (Exception ex) 
+            { 
+                Console.WriteLine(ex.Message);
+                return BadRequest(new { Message = "Username already taken!" });
+            }
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserDto request)
         {
-            //var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var allUsers = await _context.GetAllUsers();
                                     
             var user = await _context.GetUser(request);
 
             var users = new List<User>();
 
-            var userToLogin = new User()
+            var userToLogin = new User();
+           
+            if (user != null) 
             {
-                Username= user.UserName,
-                Password = user.Password,
-                isAdmin = user.IsAdmin
-            };
-
-            //foreach (var s in allUsers) 
-            //{
-            //    Console.ForegroundColor= ConsoleColor.Green;
-            //    Console.WriteLine($"{s.UserName}, {s.Password}");
-            //}
-
-            //Console.ForegroundColor = ConsoleColor.Red;
-            //Console.WriteLine($"{userToLogin.Username}, {userToLogin.Password}");
-
-
+                userToLogin.Username = user.UserName;
+                userToLogin.Password = user.Password;
+                userToLogin.isAdmin = user.IsAdmin; 
+            }
+                        
             foreach (var userTable in allUsers)
             {
                 var something = new User()
@@ -83,8 +82,15 @@ namespace PracticeFullstackApp.Controllers
                 };
                 users.Add(something);
             }
+                        
+            bool verified = false;
 
-            if (users.Any(x => x.Equals(userToLogin))) 
+            if (user != null) 
+            {
+                verified = BCrypt.Net.BCrypt.Verify(request.Password, userToLogin.Password);            
+            }
+
+            if (users.Any(x => x.Equals(userToLogin)) && verified) 
             {
                 string token = CreateToken(userToLogin);
                 return Ok(token);                
@@ -95,7 +101,7 @@ namespace PracticeFullstackApp.Controllers
         private string CreateToken(User user)
         {
 
-            Console.WriteLine(user.isAdmin.ToString());
+            //Console.WriteLine(user.isAdmin.ToString());
 
             List<Claim> claims = new List<Claim>
             {
@@ -106,7 +112,7 @@ namespace PracticeFullstackApp.Controllers
                 new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString() )
             };
 
-            if (user.isAdmin == "true")
+            if (user.isAdmin == true)
             {
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
             }

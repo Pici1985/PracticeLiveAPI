@@ -122,7 +122,7 @@ namespace PracticeFullstackApp.Contexts
         public async Task<UsersTable> GetUser(UserDto user)
         {
             var userToLogin = (from u in Users
-                               where u.UserName == user.Username && u.Password == user.Password 
+                               where u.UserName == user.Username 
                                select u).FirstOrDefault();
 
             return userToLogin;

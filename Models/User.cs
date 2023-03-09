@@ -7,7 +7,7 @@ namespace PracticeFullstackApp.Models
     {
         public string? Username { get; set; } 
         public string? Password { get; set; }
-        public string? isAdmin { get; set; }
+        public bool? isAdmin { get; set; }
 
         // This is interesting 
         public override bool Equals(object obj)
@@ -20,7 +20,8 @@ namespace PracticeFullstackApp.Models
             User otherUser = (User)obj;
 
             return this.Username == otherUser.Username &&
-                   this.Password == otherUser.Password;
+                   this.Password == otherUser.Password &&
+                   this.isAdmin == otherUser.isAdmin;
         }
 
         public override int GetHashCode()
