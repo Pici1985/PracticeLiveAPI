@@ -13,6 +13,7 @@ namespace PracticeFullstackApp.Contexts
 
         public DbSet<TestTable> TestTable { get; set; }
         public DbSet<UsersTable> Users { get; set; }
+        public DbSet<Characters> Characters { get; set; }
 
 
 
