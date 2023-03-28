@@ -46,7 +46,7 @@ namespace PracticeFullstackApp.Controllers
         [Route("/characters/")]
         [HttpPost]
         [EnableCors]
-        public async Task<IActionResult> InsertCharacter([FromBody]Characters character)    
+        public async Task<IActionResult> InsertCharacter([FromBody]CharactersALT character)    
         {
             _characterRepository.Insert(character);
 
@@ -68,7 +68,7 @@ namespace PracticeFullstackApp.Controllers
         [Route("/characters/")]
         [HttpPut]
         [EnableCors]
-        public async Task<IActionResult> UpdateCharacter([FromBody] Characters character)    
+        public async Task<IActionResult> UpdateCharacter([FromBody] CharactersALT character)    
         {
             if (_characterRepository.Update(character)) 
             { 
@@ -76,5 +76,16 @@ namespace PracticeFullstackApp.Controllers
             }
             return BadRequest(new { Message = "Character not found!" });
         }
+        
+        //[Route("/testendpoint/")]
+        //[HttpGet]
+        //[EnableCors]
+        //public async Task<IActionResult> TestEndpoint()    
+        //{
+        //    var characterList = _characterRepository.GetAllCharactersALT();
+
+
+        //    return Ok(characterList);
+        //}
     }
 }

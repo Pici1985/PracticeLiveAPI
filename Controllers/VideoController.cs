@@ -105,5 +105,15 @@ namespace PracticeFullstackApp.Controllers
             }
             return BadRequest(new { Message = $"VideoID: {video.Id} does not exist" });
         }
+        
+        //[Route("/test")]
+        //[HttpGet]
+        ////[Authorize]
+        //public async Task<IActionResult> testendpoint()
+        //{
+        //    var items = context.GetCharAV();
+
+        //    return Ok(items);
+        //}
     }
 }

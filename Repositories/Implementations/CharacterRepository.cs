@@ -17,8 +17,28 @@ namespace PracticeFullstackApp.Repositories.Implementations
 
         public IEnumerable<Characters> GetAll()
         {
-            var allCharacters = (from characters in _context.Characters
-                                 select characters).ToList();
+            //var allCharacters = (from characters in _context.Characters
+            //                     select characters).ToList();
+            var allCharacters = (from character in _context.CharactersALT
+                                    join char_av in _context.Character_Avatar on character.Id equals char_av.Character_ID
+                                    join avatar in _context.Avatars on char_av.Avatar_ID equals avatar.Id
+                                    select new Characters()
+                                    {
+                                        Id = character.Id,
+                                        Name = character.Name,
+                                        Image = avatar.Image,
+                                        Class = character.Class,
+                                        Level = character.Level,
+                                        KE = character.KE,
+                                        TE = character.TE,
+                                        VE = character.VE,
+                                        FP = character.PF,
+                                        EP = character.EP,
+                                        SFE = character.SFE,
+                                        SPJ = character.SPJ,
+                                        SPB = character.SPB,
+                                    }).ToList();
+
 
             return allCharacters;    
         }
@@ -32,9 +52,9 @@ namespace PracticeFullstackApp.Repositories.Implementations
             return character;
         }
 
-        public void Insert(Characters character)
+        public void Insert(CharactersALT character)
         {
-            var characterToSave = new Characters()
+            var characterToSave = new CharactersALT()
             { 
                 Name = character.Name,  
                 Image = character.Image,
@@ -43,36 +63,63 @@ namespace PracticeFullstackApp.Repositories.Implementations
                 KE = character.KE,
                 VE = character.VE,  
                 TE = character.TE,
-                FP = character.FP,
+                PF = character.PF,
                 EP = character.EP,
                 SFE = character.SFE,
                 SPJ = character.SPJ,    
                 SPB = character.SPB,
             };
 
-            _context.Characters.Add(characterToSave);
+            _context.CharactersALT.Add(characterToSave);
+
+            _context.SaveChanges();
+
+            var Char_Avatar = new Character_Avatar()
+            {
+                Avatar_ID = characterToSave.Image,
+                Character_ID = characterToSave.Id
+            };
+
+            _context.Character_Avatar.Add(Char_Avatar);
+
             _context.SaveChanges();
         }
 
         public bool Delete(int id) 
         {
-            var characterToRemove = (from character in _context.Characters
+            var Char_AvatarToRemove = (from char_av in _context.Character_Avatar
+                                       where char_av.Character_ID == id
+                                       select char_av).FirstOrDefault();
+
+            if (Char_AvatarToRemove == null)
+            {
+                return false;
+            }
+
+            _context.Character_Avatar.Remove(Char_AvatarToRemove);
+            _context.SaveChanges();
+
+            var characterToRemove = (from character in _context.CharactersALT
                                      where character.Id == id
                                      select character).FirstOrDefault();
 
-            if (characterToRemove != null) 
+            if (characterToRemove == null) 
             { 
-                _context.Characters.Remove(characterToRemove);
-                _context.SaveChanges();
-
-                return true;
+                return false;
             }
-            return false;
+
+            _context.CharactersALT.Remove(characterToRemove);
+            _context.SaveChanges();
+
+
+
+            return true;
+
         }
 
-        public bool Update(Characters character)
+        public bool Update(CharactersALT character)
         {
-            var characterToUpdate = (from saved in _context.Characters
+            var characterToUpdate = (from saved in _context.CharactersALT
                                      where character.Id == saved.Id
                                      select saved).FirstOrDefault();
 
@@ -85,13 +132,13 @@ namespace PracticeFullstackApp.Repositories.Implementations
                 characterToUpdate.KE = character.KE; 
                 characterToUpdate.TE = character.TE;
                 characterToUpdate.VE = character.VE;
-                characterToUpdate.FP = character.FP;
+                characterToUpdate.PF = character.PF;
                 characterToUpdate.EP = character.EP;
                 characterToUpdate.SFE = character.SFE;
                 characterToUpdate.SPJ = character.SPJ;
                 characterToUpdate.SPB = character.SPB;
 
-                _context.Characters.Update(characterToUpdate);
+                _context.CharactersALT.Update(characterToUpdate);
                 _context.SaveChanges();
                 return true;
             }

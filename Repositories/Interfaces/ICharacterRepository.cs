@@ -9,10 +9,12 @@ namespace PracticeFullstackApp.Repositories.Interfaces
 
         Characters GetByID(int id);
 
-        void Insert(Characters character);
+        void Insert(CharactersALT character);
 
         bool Delete(int id);
 
-        bool Update(Characters character);
+        bool Update(CharactersALT character);
+
+        //IEnumerable<Characters> GetAllCharactersALT();
     }
 }
