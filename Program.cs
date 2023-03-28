@@ -12,6 +12,8 @@ using Swashbuckle.AspNetCore.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
 using System.Text;
+using PracticeFullstackApp.Repositories.Interfaces;
+using PracticeFullstackApp.Repositories.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,7 @@ var configuration = new ConfigurationBuilder()
 
 builder.Services.AddDbContext<PracticeDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<PracticeFullstackApp.Utilities.Utility>();
+builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 
 var app = builder.Build();
 
@@ -62,22 +65,32 @@ if (app.Environment.IsDevelopment())
 
 // CORS 
 
+
 var corsSettings = configuration.GetSection("CorsSettings");
-var allowedOrigin = corsSettings.GetValue<string>("AllowedOrigin");
 
-app.UseCors(policy => policy.AllowAnyOrigin());
+var section = corsSettings.GetSection("AllowedOrigin");
 
-//app.UseCors(policy => policy.WithOrigins(allowedOrigin)
-//                                        .AllowAnyHeader()
-//                                        .AllowAnyMethod()
-//                                        .AllowCredentials()
-//                                        );
+var allowedOrigin = section.Get<string[]>();
+
+if (allowedOrigin != null) 
+{ 
+    app.UseCors(options => options.WithOrigins(allowedOrigin)
+                                                .AllowAnyHeader()
+                                                .AllowAnyMethod()
+                                                .AllowCredentials()
+                                                );
+}
+
+//app.UseCors(options =>
+//    options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();
 

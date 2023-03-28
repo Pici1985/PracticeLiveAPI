@@ -13,6 +13,10 @@ namespace PracticeFullstackApp.Contexts
 
         public DbSet<TestTable> TestTable { get; set; }
         public DbSet<UsersTable> Users { get; set; }
+        public DbSet<Characters> Characters { get; set; }
+        public DbSet<CharactersALT> CharactersALT { get; set; }
+        public DbSet<Avatars> Avatars { get; set; }
+        public DbSet<Character_Avatar> Character_Avatar { get; set; }
 
 
 
@@ -127,5 +131,15 @@ namespace PracticeFullstackApp.Contexts
 
             return userToLogin;
         }
+        
+        public async Task<List<Character_Avatar>> GetCharAV()
+        {
+            var items = (from cha in Character_Avatar
+                         select cha).ToList();
+
+            return items;
+        }
+
+
     }
 }
