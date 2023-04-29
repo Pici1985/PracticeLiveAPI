@@ -50,8 +50,10 @@ var configuration = new ConfigurationBuilder()
                 .Build();
 
 builder.Services.AddDbContext<PracticeDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<PracticeFullstackApp.Utilities.Utility>();
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
+builder.Services.AddScoped<IAvatarRepository, AvatarRepository>();
 
 var app = builder.Build();
 
