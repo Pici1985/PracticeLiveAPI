@@ -14,7 +14,5 @@ namespace PracticeFullstackApp.Repositories.Interfaces
         bool Delete(int id);
 
         bool Update(CharactersALT character);
-
-        //IEnumerable<Characters> GetAllCharactersALT();
     }
 }
