@@ -20,7 +20,27 @@ namespace PracticeFullstackApp.Contexts
 
 
 
-        public List<Video> GetAllVideos()
+        public bool DoesIdExistChecker(int id)
+        {
+            var allVideos = GetAllVideosToCheckID();
+
+            var allExistingIds = new List<int>();
+
+            foreach (var currentVideo in allVideos)
+            {
+                allExistingIds.Add(currentVideo.Id);
+            }
+
+            if (allExistingIds.Contains(id))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+
+        public List<Video> GetAllVideosToCheckID()
         {
             var videos = (from v in TestTable
                           select new Video()
@@ -32,87 +52,6 @@ namespace PracticeFullstackApp.Contexts
                           }).ToList();
 
             return videos;
-        }
-
-        public Video GetVideo(int id)
-        {
-            var video = (from v in TestTable
-                         where v.Id == id
-                         select new Video()
-                         {
-                             Id = v.Id,
-                             Title = v.Title,
-                             Date = v.DateTime,
-                             Url = v.imageUrls
-                         }).FirstOrDefault();
-
-            return video;
-        }
-
-        public async Task<Video> SaveVideo(Video video)
-        {
-            var videoToSave = new TestTable()
-            {
-                Id = video.Id,
-                Title = video.Title,
-                DateTime = DateTime.Now,
-                imageUrls = video.Url
-            };
-
-            TestTable.Add(videoToSave);
-            await SaveChangesAsync();
-
-            return video;
-        }
-
-        public async Task<int> DeleteVideo(int id)
-        {
-            var videoToDelete = new TestTable()
-            {
-                Id = id,
-            };
-
-            TestTable.Remove(videoToDelete);
-            await SaveChangesAsync();
-
-            return id;
-        }
-        
-        public async Task<List<int>> DeleteVideosInRange(List<int> ids)
-        {
-            var videoListToDelete = new List<TestTable>();
-
-            foreach (var video in ids) 
-            { 
-                var videoToDelete = new TestTable()
-                {
-                    Id = video,
-                };
-                videoListToDelete.Add(videoToDelete);
-            }
-
-            TestTable.RemoveRange(videoListToDelete);
-            await SaveChangesAsync();
-
-            return ids;
-        }
-
-
-
-        public async Task<TestTable> UpdateVideo(Video video)
-        {
-            var updatedVideo = new TestTable()
-            {
-                Id = video.Id,
-                Title = video.Title,
-                DateTime = DateTime.Now,
-                imageUrls = video.Url
-            };
-
-            TestTable.Update(updatedVideo);
-            await SaveChangesAsync();
-
-            return updatedVideo;
         }
 
         public async Task<List<UsersTable>> GetAllUsers()
