@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PracticeFullstackApp.Contexts;
-using PracticeFullstackApp.Entities;
 using PracticeFullstackApp.Models;
-using PracticeFullstackApp.Repositories.Implementations;
 using PracticeFullstackApp.Repositories.Interfaces;
+using PracticeFullstackApp.Utilities;
 
 
 namespace PracticeFullstackApp.Controllers
@@ -15,11 +13,13 @@ namespace PracticeFullstackApp.Controllers
     {
         internal readonly PracticeDbContext context;
         internal readonly IVideoRepository videoRepo;
+        internal readonly IUtility utils;
 
-        public VideoController(PracticeDbContext context, IVideoRepository videoRepo)
+        public VideoController(PracticeDbContext context, IVideoRepository videoRepo, IUtility utils)
         {
             this.context = context;
             this.videoRepo = videoRepo;
+            this.utils = utils;
         }
 
         [Route("/videos")]
@@ -59,7 +59,7 @@ namespace PracticeFullstackApp.Controllers
         //[Authorize]
         public async Task<IActionResult> DeleteVideo(int id)
         {
-            if (context.DoesIdExistChecker(id))
+            if (utils.DoesIdExistChecker(id))
             {
                 videoRepo.DeleteVideo(id);
                 return Ok(new { Message = $"VideoID: {id} deleted!" });
@@ -79,7 +79,7 @@ namespace PracticeFullstackApp.Controllers
             {
                 foreach (var id in ids.Ids)
                 {
-                    if (context.DoesIdExistChecker(id))
+                    if (utils.DoesIdExistChecker(id))
                     {
                         existingIds.Add(id);
                     }
@@ -100,7 +100,7 @@ namespace PracticeFullstackApp.Controllers
         //[Authorize]
         public async Task<IActionResult> UpdateVideo([FromBody] Video video)
         {
-            if (context.DoesIdExistChecker(video.Id))
+            if (utils.DoesIdExistChecker(video.Id))
             {
                 videoRepo.UpdateVideo(video);
                 return Ok(new { Message = $"VideoID: {video.Id} updated!" });

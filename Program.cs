@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Text;
 using PracticeFullstackApp.Repositories.Interfaces;
 using PracticeFullstackApp.Repositories.Implementations;
+using PracticeFullstackApp.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,8 @@ builder.Services.AddDbContext<PracticeDbContext>(options => options.UseSqlServer
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<IAvatarRepository, AvatarRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IUtility, PracticeFullstackApp.Utilities.Utility>();
 
 var app = builder.Build();
 
