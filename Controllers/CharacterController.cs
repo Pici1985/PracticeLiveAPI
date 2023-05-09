@@ -5,7 +5,6 @@ using PracticeFullstackApp.Contexts;
 using PracticeFullstackApp.Entities;
 using PracticeFullstackApp.Models;
 using PracticeFullstackApp.Repositories.Interfaces;
-using PracticeFullstackApp.Utilities;
 
 
 namespace PracticeFullstackApp.Controllers

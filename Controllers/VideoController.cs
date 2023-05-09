@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PracticeFullstackApp.Contexts;
-using PracticeFullstackApp.Entities;
 using PracticeFullstackApp.Models;
+using PracticeFullstackApp.Repositories.Interfaces;
 using PracticeFullstackApp.Utilities;
+
 
 namespace PracticeFullstackApp.Controllers
 {
@@ -12,12 +12,14 @@ namespace PracticeFullstackApp.Controllers
     public class VideoController : ControllerBase
     {
         internal readonly PracticeDbContext context;
-        internal readonly IUtility utility;
+        internal readonly IVideoRepository videoRepo;
+        internal readonly IUtility utils;
 
-        public VideoController(PracticeDbContext context, Utility utility)
+        public VideoController(PracticeDbContext context, IVideoRepository videoRepo, IUtility utils)
         {
             this.context = context;
-            this.utility = utility;
+            this.videoRepo = videoRepo;
+            this.utils = utils;
         }
 
         [Route("/videos")]
@@ -27,7 +29,7 @@ namespace PracticeFullstackApp.Controllers
         public async Task<IActionResult> GetAllVideos()
         {
 
-            return Ok(context.GetAllVideos());
+            return Ok(videoRepo.GetAllVideos());
         }
 
         [Route("/videos/{id}")]
@@ -35,7 +37,7 @@ namespace PracticeFullstackApp.Controllers
         //[Authorize]
         public async Task<IActionResult> GetVideo(int id)
         {
-            return Ok(context.GetVideo(id));
+            return Ok(videoRepo.GetVideo(id));
         }
 
         [Route("/videos")]
@@ -45,7 +47,7 @@ namespace PracticeFullstackApp.Controllers
         {
             if (video != null)
             {
-                await context.SaveVideo(video);
+                videoRepo.SaveVideo(video);
                 return Ok(new { Message = "Video saved!" });
             }
             return BadRequest("Error");
@@ -57,9 +59,9 @@ namespace PracticeFullstackApp.Controllers
         //[Authorize]
         public async Task<IActionResult> DeleteVideo(int id)
         {
-            if (utility.DoesIdExistChecker(id))
+            if (utils.DoesIdExistChecker(id))
             {
-                await context.DeleteVideo(id);
+                videoRepo.DeleteVideo(id);
                 return Ok(new { Message = $"VideoID: {id} deleted!" });
             }
             return BadRequest(new { Message = $"{id} does not exist" });
@@ -77,14 +79,14 @@ namespace PracticeFullstackApp.Controllers
             {
                 foreach (var id in ids.Ids)
                 {
-                    if (utility.DoesIdExistChecker(id))
+                    if (utils.DoesIdExistChecker(id))
                     {
                         existingIds.Add(id);
                     }
                 }
                 if (existingIds.Count != 0)
                 {
-                    await context.DeleteVideosInRange(existingIds);
+                    videoRepo.DeleteVideosInRange(existingIds);
                     string idsDeleted = string.Join(",", existingIds);
                     return Ok($"Videos with id: {idsDeleted} removed");
                 }
@@ -98,9 +100,9 @@ namespace PracticeFullstackApp.Controllers
         //[Authorize]
         public async Task<IActionResult> UpdateVideo([FromBody] Video video)
         {
-            if (utility.DoesIdExistChecker(video.Id))
+            if (utils.DoesIdExistChecker(video.Id))
             {
-                await context.UpdateVideo(video);
+                videoRepo.UpdateVideo(video);
                 return Ok(new { Message = $"VideoID: {video.Id} updated!" });
             }
             return BadRequest(new { Message = $"VideoID: {video.Id} does not exist" });

@@ -18,7 +18,7 @@ namespace PracticeFullstackApp.Controllers
     [ApiController]
     public class Auth : ControllerBase
     {
-        //public static User user = new User();
+        
         internal readonly PracticeDbContext _context;
         private readonly IConfiguration _configuration;
 
@@ -57,9 +57,9 @@ namespace PracticeFullstackApp.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserDto request)
         {
-            var allUsers = await _context.GetAllUsers();
+            var allUsers = _context.GetAllUsers();
                                     
-            var user = await _context.GetUser(request);
+            var user = _context.GetUser(request);
 
             var users = new List<User>();
 

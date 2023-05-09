@@ -5,7 +5,6 @@ using PracticeFullstackApp.Contexts;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
 using FluentAssertions.Common;
-using PracticeFullstackApp.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -14,6 +13,7 @@ using System.Configuration;
 using System.Text;
 using PracticeFullstackApp.Repositories.Interfaces;
 using PracticeFullstackApp.Repositories.Implementations;
+using PracticeFullstackApp.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,9 +51,11 @@ var configuration = new ConfigurationBuilder()
 
 builder.Services.AddDbContext<PracticeDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<PracticeFullstackApp.Utilities.Utility>();
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
+builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<IAvatarRepository, AvatarRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IUtility, PracticeFullstackApp.Utilities.Utility>();
 
 var app = builder.Build();
 

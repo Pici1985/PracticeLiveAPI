@@ -44,25 +44,25 @@ namespace PracticeFullstackApp.Repositories.Implementations
         // to be sorted out
         public Characters? GetByID(int id)
         {
-            var character = (from anyad in _context.CharactersALT
-                             join char_av in _context.Character_Avatar on anyad.Id equals char_av.Character_ID
+            var character = (from charAlt in _context.CharactersALT
+                             join char_av in _context.Character_Avatar on charAlt.Id equals char_av.Character_ID
                              join av in _context.Avatars on char_av.Avatar_ID equals av.Id
-                             where anyad.Id == id
+                             where charAlt.Id == id
                              select new Characters 
                              {
-                                 Id = anyad.Id,
-                                 Name = anyad.Name,
+                                 Id = charAlt.Id,
+                                 Name = charAlt.Name,
                                  Image = av.Image,
-                                 Class = anyad.Class,
-                                 Level = anyad.Level,
-                                 KE = anyad.KE,
-                                 TE = anyad.TE,
-                                 VE = anyad.VE,
-                                 EP = anyad.EP,
-                                 FP = anyad.FP,
-                                 SFE = anyad.SFE,
-                                 SPJ = anyad.SPJ,
-                                 SPB = anyad.SPB,
+                                 Class = charAlt.Class,
+                                 Level = charAlt.Level,
+                                 KE = charAlt.KE,
+                                 TE = charAlt.TE,
+                                 VE = charAlt.VE,
+                                 EP = charAlt.EP,
+                                 FP = charAlt.FP,
+                                 SFE = charAlt.SFE,
+                                 SPJ = charAlt.SPJ,
+                                 SPB = charAlt.SPB,
                              }).FirstOrDefault();
                         
             if (character != null) 
