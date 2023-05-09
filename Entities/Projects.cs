@@ -12,7 +12,5 @@ namespace PracticeFullstackApp.Entities
         public string? LiveUrl { get; set; }
         public string? ImageUrl { get; set; }
         public string? GitHubUrl { get; set; }
-        public int? Icons { get; set; }
-        
     }
 }

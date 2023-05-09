@@ -18,6 +18,10 @@ namespace PracticeFullstackApp.Contexts
         public DbSet<Avatars> Avatars { get; set; }
         public DbSet<Character_Avatar> Character_Avatar { get; set; }
         public DbSet<Projects> Projects { get; set; }
+        public DbSet<Project_Icon> Project_Icon { get; set; }
+        public DbSet<Icons> Icons { get; set; }
+
+
 
 
         //this will need a repository and controller

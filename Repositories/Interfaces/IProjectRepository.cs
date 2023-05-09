@@ -5,6 +5,6 @@ namespace PracticeFullstackApp.Repositories.Interfaces
 {
     public interface IProjectRepository
     {
-        IEnumerable<Projects> GetAll();
+        IEnumerable<Project> GetAll();
     }
 }
