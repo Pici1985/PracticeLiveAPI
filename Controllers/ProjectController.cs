@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PracticeFullstackApp.Models;
 using PracticeFullstackApp.Repositories.Implementations;
 using PracticeFullstackApp.Repositories.Interfaces;
 
@@ -22,7 +23,28 @@ namespace PracticeFullstackApp.Controllers
         [EnableCors]
         public async Task<IActionResult> GetAllProjects()
         {
-            return Ok(_iprojectRepository.GetAll());
+            IEnumerable<Project>? projects = _iprojectRepository.GetAll();
+
+            if(projects != null) 
+            { 
+                return Ok(projects);
+            }
+            return BadRequest();
+
+        }
+        
+        [Route("/projects/{id}")]
+        [HttpGet]
+        [EnableCors]
+        public async Task<IActionResult> GetOneProject(int id)
+        {
+            Project? project = _iprojectRepository.GetOne(id);
+
+            if (project != null) 
+            { 
+                return Ok(project);
+            }
+            return BadRequest();
         }
     }
 }
