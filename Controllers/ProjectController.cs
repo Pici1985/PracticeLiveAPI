@@ -30,7 +30,6 @@ namespace PracticeFullstackApp.Controllers
                 return Ok(projects);
             }
             return BadRequest();
-
         }
         
         [Route("/projects/{id}")]
