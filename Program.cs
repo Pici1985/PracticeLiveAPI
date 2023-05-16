@@ -14,6 +14,7 @@ using System.Text;
 using PracticeFullstackApp.Repositories.Interfaces;
 using PracticeFullstackApp.Repositories.Implementations;
 using PracticeFullstackApp.Utilities;
+using PracticeFullstackApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +58,7 @@ builder.Services.AddScoped<IAvatarRepository, AvatarRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 builder.Services.AddScoped<IUtility, PracticeFullstackApp.Utilities.Utility>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
