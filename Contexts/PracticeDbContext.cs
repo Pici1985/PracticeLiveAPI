@@ -20,6 +20,7 @@ namespace PracticeFullstackApp.Contexts
         public DbSet<Projects> Projects { get; set; }
         public DbSet<Project_Icon> Project_Icon { get; set; }
         public DbSet<Icons> Icons { get; set; }
+        public DbSet<BlogPosts> BlogPosts { get; set; }
 
 
 

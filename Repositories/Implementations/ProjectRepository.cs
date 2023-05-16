@@ -15,7 +15,7 @@ namespace PracticeFullstackApp.Repositories.Implementations
             _context = context;
         }
 
-        public IEnumerable<Project> GetAll()
+        public IEnumerable<Project>? GetAll()
         {
             var allProjects = (from p in _context.Projects
                                select new Project() 
@@ -39,7 +39,36 @@ namespace PracticeFullstackApp.Repositories.Implementations
             {
                 return allProjects;
             }
-            return Array.Empty<Project>();
+            return null;
+        }
+
+        public Project? GetOne(int id) 
+        { 
+            var project = (from p in _context.Projects
+                           where p.Id == id
+                           select new Project()
+                           {
+                               Id = p.Id,
+                               Title = p.Title,
+                               Description = p.Description,
+                               Detail = p.Detail,
+                               LiveUrl = p.LiveUrl,
+                               ImageUrl = p.ImageUrl,
+                               GitHubUrl = p.GitHubUrl,
+                               Icons = (from icon in _context.Icons
+                                        join project_icon in _context.Project_Icon on icon.Id equals project_icon.Icon_Id
+                                        join project in _context.Projects on project_icon.Project_Id equals project.Id
+                                        where project_icon.Project_Id == p.Id
+                                        select icon.IconUrl
+                                        ).ToList()
+                           }).FirstOrDefault();
+
+
+            if (project != null)
+            {
+                return project;
+            }
+            return null;
         }
     }
 }
